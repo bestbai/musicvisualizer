@@ -21,7 +21,18 @@ void myCallback(void* userData,Uint8* stream,int len)
     SDL_memcpy(stream,audio->position,length);
     
     audio->position+=length;
-    audio->length-=length;     
+    audio->length-=length;
+    
+    // loop playback and change mode
+    static Uint32 total;
+    total+=length;
+    if(audio->length==0)
+    {
+        audio->length=total;
+        audio->position-=total;
+        total=0;
+        changeMode();
+    }
 }
 
 double Get16bitAudioSample(Uint8* bytebuffer,SDL_AudioFormat format)
